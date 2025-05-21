@@ -4,12 +4,10 @@ import { useState, useEffect } from "react";
 import { FaTasks } from "react-icons/fa";
 import { GiGoldBar } from "react-icons/gi";
 import FotoTask from "./fotoTask";
-import VideoTask from "./videoTask";
 import aufgaben from "./aufgaben.json";
 
 export default function Team({ params }: { params: { team: string } }) {
-  const [isStarted, setIsStarted] = useState(true);
-  const { team } = params;
+  const team = params.team;
   type TeamData = {
     id: number;
     team_id: string;
@@ -38,16 +36,16 @@ export default function Team({ params }: { params: { team: string } }) {
     fetchTeamData();
   }, [team]);
 
-  if (!isStarted) {
-    return (
-      <div className="flex flex-col items-center min-h-screen p-4">
-        <h1 className="text-gray-300 text-xl mt-2">Macht euch bereit!</h1>
-        <h1 className="text-gray-300 text-xl mt-2">
-          Das Spiel startet in kürze!
-        </h1>
-      </div>
-    );
-  }
+  // if (!isStarted) {
+  //   return (
+  //     <div className="flex flex-col items-center min-h-screen p-4">
+  //       <h1 className="text-gray-300 text-xl mt-2">Macht euch bereit!</h1>
+  //       <h1 className="text-gray-300 text-xl mt-2">
+  //         Das Spiel startet in kürze!
+  //       </h1>
+  //     </div>
+  //   );
+  // }
 
   if (!teamData) {
     return (

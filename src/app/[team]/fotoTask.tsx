@@ -11,7 +11,6 @@ type TeamData = {
 };
 
 export default function FotoTask({
-  key,
   taskId,
   team,
   task,
@@ -34,16 +33,14 @@ export default function FotoTask({
     setUploading(true);
 
     const filePath = `public/${Date.now()}-${file.name}`;
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from(`fotorallye/${team}`)
       .upload(filePath, file);
 
     if (error) {
       alert("Fehler beim Hochladen: " + error.message);
     } else {
-      const { data: publicUrlData } = supabase.storage
-        .from("fotorallye")
-        .getPublicUrl(filePath);
+      supabase.storage.from("fotorallye").getPublicUrl(filePath);
     }
 
     await fetch("/api/teamUpload", {

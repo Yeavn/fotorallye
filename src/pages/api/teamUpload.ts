@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(404).json({ error: 'Team nicht gefunden' });
         }
 
-        let aufgabenRaw = (rows as any[])[0].aufgaben;
+        const aufgabenRaw = (rows as any[])[0].aufgaben;
         let currentTasks: number[] = [];
 
         if (aufgabenRaw) {
@@ -47,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 } else {
                     currentTasks = [];
                 }
-            } catch (e) {
+            } catch {
                 currentTasks = [];
             }
         }
