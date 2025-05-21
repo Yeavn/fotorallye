@@ -70,3 +70,4 @@ export default function TeamClient({ team }: { team: string }) {
     </div>
   );
 }
+//
