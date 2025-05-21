@@ -6,7 +6,13 @@ import { GiGoldBar } from "react-icons/gi";
 import FotoTask from "./fotoTask";
 import aufgaben from "./aufgaben.json";
 
-export default function Team({ params }: { params: { team: string } }) {
+type PageProps = {
+  params: {
+    team: string;
+  };
+};
+
+export default function Team({ params }: PageProps) {
   const team = params.team;
   type TeamData = {
     id: number;
