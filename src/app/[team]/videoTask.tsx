@@ -8,7 +8,7 @@ export default function VideoTask({
   task: string;
 }) {
   return (
-    <div className="w-full bg-indigo-400 py-4 rounded-lg shadow-lg flex items-center">
+    <div className="w-full bg-indigo-400 py-4 rounded-sm shadow-lg flex items-center">
       <p className="text-white w-full p-2">{task}.</p>
       <label className="cursor-pointer m-0 p-0">
         <input

@@ -1,55 +1,103 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa";
+import { supabase } from "../../../lib/supabase/client";
+
+type TeamData = {
+  id: number;
+  team_id: string;
+  team_name: string;
+  punkte: number;
+  aufgaben: number[];
+};
 
 export default function FotoTask({
   key,
+  taskId,
   team,
   task,
+  teamData,
 }: {
   key: number;
+  taskId: number;
   team: string;
   task: string;
+  teamData: TeamData;
 }) {
+  const [uploading, setUploading] = useState(false);
   const [isSet, setIsSet] = useState(false);
 
   // Bild-Upload Handler
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("key", key.toString());
+    setUploading(true);
 
-    try {
-      await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-      setIsSet(true);
-    } catch (err) {
-      alert("Fehler beim Hochladen!");
+    const filePath = `public/${Date.now()}-${file.name}`;
+    const { data, error } = await supabase.storage
+      .from(`fotorallye/${team}`)
+      .upload(filePath, file);
+
+    if (error) {
+      alert("Fehler beim Hochladen: " + error.message);
+    } else {
+      const { data: publicUrlData } = supabase.storage
+        .from("fotorallye")
+        .getPublicUrl(filePath);
     }
+
+    await fetch("/api/teamUpload", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        team_id: team,
+        task_id: taskId,
+      }),
+    });
+
+    setUploading(false);
+    setIsSet(true);
   };
+
+  useEffect(() => {
+    const checkIfSet = () => {
+      teamData.aufgaben.forEach((aufgabe) => {
+        if (aufgabe === taskId) {
+          console.log("aufgabe gefunden", aufgabe);
+
+          setIsSet(true);
+        }
+      });
+    };
+    checkIfSet();
+  }, []);
 
   return (
     <div
       className={
         isSet
-          ? "w-full bg-green-700 py-4 rounded-lg shadow-lg flex items-center"
-          : "w-full bg-indigo-400 py-4 rounded-lg shadow-lg flex items-center"
+          ? "w-full bg-green-700 py-4 rounded-sm shadow-lg flex items-center"
+          : "w-full bg-indigo-400 py-4 rounded-sm shadow-lg flex items-center"
       }
     >
-      <p className="text-white w-full p-2">{task}.</p>
+      {uploading ? (
+        <p className="text-white w-full p-2">Datei wird hochgeladen...</p>
+      ) : (
+        <p className="text-white w-full p-2">{task}.</p>
+      )}
       <label className="cursor-pointer m-0 p-0">
         <input
           type="file"
           accept="image/*"
           capture="environment"
           style={{ display: "none" }}
-          onChange={handleFileChange}
+          onChange={uploadImage}
         />
-        <FaCamera className="text-white text-6xl p-2" />
+        {isSet || uploading ? null : (
+          <FaCamera className="text-white text-6xl p-2" />
+        )}
       </label>
     </div>
   );
