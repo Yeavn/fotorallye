@@ -15,12 +15,13 @@ export default function FotoTask({
   team,
   task,
   teamData,
+  onPointsAdded,
 }: {
-  key: number;
   taskId: number;
   team: string;
   task: string;
   teamData: TeamData;
+  onPointsAdded: (punkte: number) => void;
 }) {
   const [uploading, setUploading] = useState(false);
   const [isSet, setIsSet] = useState(false);
@@ -56,6 +57,10 @@ export default function FotoTask({
 
     setUploading(false);
     setIsSet(true);
+    if (onPointsAdded) {
+      onPointsAdded(50);
+    }
+    
   };
 
   useEffect(() => {
@@ -75,8 +80,8 @@ export default function FotoTask({
     <div
       className={
         isSet
-          ? "w-full bg-green-700 py-4 rounded-sm shadow-lg flex items-center"
-          : "w-full bg-indigo-400 py-4 rounded-sm shadow-lg flex items-center"
+          ? "w-full bg-green-900 py-4 rounded-sm shadow-lg flex items-center"
+          : "w-full bg-[#4b0082] py-4 rounded-sm shadow-lg flex items-center"
       }
     >
       {uploading ? (

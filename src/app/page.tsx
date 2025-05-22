@@ -7,19 +7,19 @@ export default function Home() {
       <div className="flex gap-6 w-3/4 flex-wrap">
         <Link
           href="/pixelpiraten"
-          className="w-full bg-indigo-400 px-4 py-2 text-center rounded-lg shadow-md"
+          className="w-full bg-[#4b0082] px-4 py-2 text-center rounded-lg shadow-md"
         >
           <p className="text-white text-xl">Die Pixel-Piraten</p>
         </Link>
         <Link
           href="/blitzbirnen"
-          className="w-full bg-indigo-400 px-4 py-2 text-center rounded-lg shadow-md"
+          className="w-full bg-[#4b0082] px-4 py-2 text-center rounded-lg shadow-md"
         >
           <p className="text-white text-xl">Die Blitzbirnen</p>
         </Link>
         <Link
           href="/denkdinos"
-          className="w-full bg-indigo-400 px-4 py-2 text-center rounded-lg shadow-md"
+          className="w-full bg-[#4b0082] px-4 py-2 text-center rounded-lg shadow-md"
         >
           <p className="text-white text-xl">Die Denk-Dinos</p>
         </Link>

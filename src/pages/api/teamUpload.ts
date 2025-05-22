@@ -1,6 +1,6 @@
 // app/api/complete-task/route.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import mysql from 'mysql2/promise';
+import mysql, { RowDataPacket } from 'mysql2/promise';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
@@ -25,43 +25,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
 
         // Bestehende Aufgaben abrufen
-        const [rows] = await db.query(
-            'SELECT aufgaben FROM teams WHERE team_id = ?',
+        // Bestehende Aufgaben abrufenf
+        const [rows] = await db.query<RowDataPacket[]>(
+            'SELECT * FROM teams WHERE team_id = ?',
             [team_id]
         );
 
-        if ((rows as any[]).length === 0) {
-            return res.status(404).json({ error: 'Team nicht gefunden' });
-        }
+        console.log('Rows:', rows); // Debugging-Ausgabe
 
-        const aufgabenRaw = (rows as any[])[0].aufgaben;
-        let currentTasks: number[] = [];
+        rows[0].aufgaben.push(task_id);
+        rows[0].punkte += 50;
+        console.log('Updated numbers:', rows[0].aufgaben); // Debugging-Ausgabe
+        await db.query('UPDATE teams SET aufgaben = ? WHERE team_id = ?', [JSON.stringify(rows[0].aufgaben), team_id])
+        await db.query('UPDATE teams SET punkte = ? WHERE team_id = ?', [rows[0].punkte, team_id]);
 
-        if (aufgabenRaw) {
-            try {
-                const parsed = JSON.parse(aufgabenRaw);
-                if (Array.isArray(parsed)) {
-                    currentTasks = parsed;
-                } else if (typeof parsed === 'number') {
-                    currentTasks = [parsed];
-                } else {
-                    currentTasks = [];
-                }
-            } catch {
-                currentTasks = [];
-            }
-        }
-
-        if (!currentTasks.includes(task_id)) {
-            currentTasks.push(task_id);
-
-            await db.execute(
-                'UPDATE teams SET aufgaben = ? WHERE team_id = ?',
-                [JSON.stringify(currentTasks), team_id]
-            );
-        }
-
-        return res.status(200).json({ success: true, updatedTasks: currentTasks });
+        return res.status(200).json({ success: true, updatedTasks: rows[0].aufgaben });
     } catch (error: any) {
         console.error(error);
         if (error.code === 'ECONNREFUSED') {
