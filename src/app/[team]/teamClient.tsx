@@ -41,7 +41,7 @@ export default function TeamClient({ team }: { team: string }) {
     };
     fetchTeamData()
 
-    const socket = new WebSocket("ws://localhost:3001");
+    const socket = new WebSocket("ws://217.154.200.205:3001");
     socket.onopen = () => {
       console.log('✅ Verbindung hergestellt');
     };

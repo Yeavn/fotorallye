@@ -33,7 +33,7 @@ export default function AdminClient()  {
     }
 
     useEffect(() => {
-        socketRef.current = new WebSocket("ws://localhost:3001")
+        socketRef.current = new WebSocket("ws://217.154.200.205:3001")
         socketRef.current.onopen = () => {
             console.log('✅ Verbindung hergestellt');
         };
