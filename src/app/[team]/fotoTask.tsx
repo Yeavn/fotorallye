@@ -33,7 +33,7 @@ export default function FotoTask({
 
     setUploading(true);
 
-    const filePath = `public/${taskId} - ${task}`;
+    const filePath = `public/Aufgabe ${taskId}`;
     const { error } = await supabase.storage
       .from(`fotorallye/${team}`)
       .upload(filePath, file);
