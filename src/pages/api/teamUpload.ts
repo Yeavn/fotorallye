@@ -34,10 +34,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.log('Rows:', rows); // Debugging-Ausgabe
 
         rows[0].aufgaben.push(task_id);
-        rows[0].punkte += 50;
         console.log('Updated numbers:', rows[0].aufgaben); // Debugging-Ausgabe
         await db.query('UPDATE teams SET aufgaben = ? WHERE team_id = ?', [JSON.stringify(rows[0].aufgaben), team_id])
-        await db.query('UPDATE teams SET punkte = ? WHERE team_id = ?', [rows[0].punkte, team_id]);
 
         return res.status(200).json({ success: true, updatedTasks: rows[0].aufgaben });
     } catch (error: any) {

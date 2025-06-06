@@ -21,6 +21,7 @@ export default function TeamClient({ team }: { team: string }) {
   const [teamData, setTeamData] = useState<TeamData | null>(null);
   const [isStarted, setIsStarted] = useState(false);
   const [startText, setStartText] = useState("bald!");
+  const [time, setTime] = useState(60)
   useEffect(() => {
     const fetchTeamData = async () => {
       try {
@@ -40,21 +41,30 @@ export default function TeamClient({ team }: { team: string }) {
     };
     fetchTeamData()
 
-    const socket = new WebSocket("ws://88.214.56.148:3001");
+    const socket = new WebSocket("ws://localhost:3001");
     socket.onopen = () => {
       console.log('✅ Verbindung hergestellt');
     };
     socket.onmessage = (event) => {
       console.log("WebSocket message received:", event.data);
-      if (event.data === "start") {
+      let message;
+      try {
+        message = JSON.parse(event.data);
+      } catch {
+        message = event.data;
+      }
+      if (message.type === "time") {
+        setTime(message.value);
+      }
+      if (message === "start") {
         setStartText("in 3.");
         setTimeout(() => setStartText("in 2."), 1000);
         setTimeout(() => setStartText("in 1."), 2000);
         setTimeout(() => setIsStarted(true), 3000)
-      } else if (event.data === "stop") {
+      } else if (message === "stop") {
         setStartText("bald!");
         setIsStarted(false);
-      } else if (event.data === "started") {
+      } else if (message === "started") {
         setIsStarted(true);
       }
     };
@@ -86,9 +96,9 @@ export default function TeamClient({ team }: { team: string }) {
 
   return (
     <div className="flex flex-col items-center min-h-screen">
-      <div className="relative w-full text-white">
+      <div className="relative w-full text-gray-100">
         <div
-          className="w-full bg-[#4b0082] text-center py-6 text-xl font-bold shadow-lg"
+          className="w-full bg-[#C0A9BD] text-center py-6 text-xl font-bold shadow-lg"
           style={{
             clipPath: 'polygon(15% 100%, 85% 100%, 100% 0, 0 0)',
           }}
@@ -96,14 +106,11 @@ export default function TeamClient({ team }: { team: string }) {
           Team {teamData.team_name}
         </div>
       </div>
-      <div className="flex items-center mt-4 w-3/5 justify-between">
-        <h1 className="text-white text-2xl">45 min</h1>
-        <h1 className="text-white text-2xl flex items-center gap-1">
-          {teamData.punkte} <GiGoldBar className="inline text-3xl" />
-        </h1>
+      <div className="flex items-center mt-4 w-3/5 justify-center">
+        <h1 className="text-[#64766A] font-bold text-2xl">{time} min</h1>
       </div>
       <div className="mt-8 w-5/6">
-        <h1 className="text-gray-300 text-lg inline-block">
+        <h1 className="text-[#333333] text-lg inline-block">
           <FaTasks className="inline mr-2" />
           Aufgaben
         </h1>

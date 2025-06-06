@@ -1,7 +1,5 @@
-// lib/db.js
 import mysql from 'mysql2/promise';
 
-// Erstelle einen Verbindungspool (empfohlen für bessere Performance)
 const db = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,

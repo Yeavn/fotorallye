@@ -33,7 +33,7 @@ export default function FotoTask({
 
     setUploading(true);
 
-    const filePath = `public/${Date.now()}-${file.name}`;
+    const filePath = `public/${taskId} - ${task}`;
     const { error } = await supabase.storage
       .from(`fotorallye/${team}`)
       .upload(filePath, file);
@@ -45,6 +45,7 @@ export default function FotoTask({
     }
 
     await fetch("/api/teamUpload", {
+      cache: "no-store",
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -68,8 +69,7 @@ export default function FotoTask({
       teamData.aufgaben.forEach((aufgabe) => {
         if (aufgabe === taskId) {
           console.log("aufgabe gefunden", aufgabe);
-
-          setIsSet(true);
+          setIsSet(true)
         }
       });
     };
@@ -80,8 +80,8 @@ export default function FotoTask({
     <div
       className={
         isSet
-          ? "w-full bg-green-900 py-4 rounded-sm shadow-lg flex items-center"
-          : "w-full bg-[#4b0082] py-4 rounded-sm shadow-lg flex items-center"
+          ? "w-full bg-[#64766A] py-4 rounded-sm shadow-lg flex items-center"
+          : "w-full bg-[#C0A9BD] py-4 rounded-sm shadow-lg flex items-center "
       }
     >
       {uploading ? (
